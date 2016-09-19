@@ -5,8 +5,9 @@ class Verse < ApplicationRecord
   alias_attribute :verse_number, :v
   alias_attribute :text, :t
 
-  	def self.verse
-  		puts 'Hello world'
-  	end
+	def self.identify_by_accumulator( opts = {} )
+		chapter_number = opts.fetch(:chapter){ 0 }
+		puts 'Hello world ' + chapter_number.to_s
+	end
 
 end

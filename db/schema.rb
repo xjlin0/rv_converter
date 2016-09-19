@@ -12,98 +12,20 @@
 
 ActiveRecord::Schema.define(version: 20160919140040) do
 
-  create_table "bible_version_key", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", comment: "This is the general translation information and db links" do |t|
-    t.text "table",          limit: 65535, null: false, comment: "Database Table Name "
-    t.text "abbreviation",   limit: 65535, null: false, comment: "Version Abbreviation"
-    t.text "language",       limit: 65535, null: false, comment: "Language of bible translation (used for language key tables)"
-    t.text "version",        limit: 65535, null: false, comment: "Version Name"
-    t.text "info_text",      limit: 65535, null: false, comment: "About / Info"
-    t.text "info_url",       limit: 65535, null: false, comment: "Info URL"
-    t.text "publisher",      limit: 65535, null: false, comment: "Publisher"
-    t.text "copyright",      limit: 65535, null: false, comment: "Copyright "
-    t.text "copyright_info", limit: 65535, null: false, comment: "Extended Copyright info"
-  end
-
-  create_table "key_abbreviations_english", unsigned: true, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", comment: "A table mapping book abbreviations to the book they refer to" do |t|
-    t.string  "a",                           null: false
-    t.integer "b", limit: 2,                 null: false, comment: "ID of book that is abbreviated",                          unsigned: true
-    t.boolean "p",           default: false, null: false, comment: "Whether an abbreviation is the primary one for the book"
-  end
-
-  create_table "key_english", primary_key: "b", id: :integer, comment: "Book #", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.text    "n", limit: 65535, null: false, comment: "Name"
-    t.string  "t", limit: 2,     null: false, comment: "Which Testament this book is in"
-    t.integer "g", limit: 1,     null: false, comment: "A genre ID to identify the type of book this is", unsigned: true
-  end
-
-  create_table "key_genre_english", primary_key: "g", unsigned: true, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", comment: "Table mapping genre IDs to genre names for book table lookup" do |t|
-    t.string "n", null: false, comment: "Name of genre"
-  end
-
-  create_table "t_asv", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "t_kjv", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "b",               null: false
     t.integer "c",               null: false
     t.integer "v",               null: false
-    t.text    "t", limit: 65535, null: false
-    t.index ["id"], name: "id", using: :btree
-    t.index ["id"], name: "id_2", using: :btree
-    t.index ["id"], name: "id_3", unique: true, using: :btree
-    t.index ["id"], name: "id_4", using: :btree
-    t.index ["id"], name: "id_5", using: :btree
-    t.index ["id"], name: "id_6", using: :btree
-    t.index ["id"], name: "id_7", using: :btree
-    t.index ["id"], name: "id_8", using: :btree
-  end
-
-  create_table "t_bbe", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.integer "b",               null: false
-    t.integer "c",               null: false
-    t.integer "v",               null: false
-    t.text    "t", limit: 65535, null: false
-    t.index ["id"], name: "id", unique: true, using: :btree
-    t.index ["id"], name: "id_2", using: :btree
-  end
-
-  create_table "t_dby", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.integer "b",               null: false
-    t.integer "c",               null: false
-    t.integer "v",               null: false
-    t.text    "t", limit: 65535, null: false
-    t.index ["id"], name: "id", unique: true, using: :btree
-    t.index ["id"], name: "id_2", unique: true, using: :btree
-  end
-
-  create_table "t_kjv", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.integer "b",               null: false
-    t.integer "c",               null: false
-    t.integer "v",               null: false
-    t.text    "t", limit: 65535, null: false
+    t.text    "t", limit: 65535
     t.index ["id"], name: "id", using: :btree
     t.index ["id"], name: "id_2", unique: true, using: :btree
   end
 
-  create_table "t_wbt", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.integer "id",               null: false
-    t.integer "b",                null: false
-    t.integer "c",                null: false
-    t.integer "v",                null: false
-    t.text    "t",  limit: 65535, null: false
-  end
-
-  create_table "t_web", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "verses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "b",               null: false
     t.integer "c",               null: false
     t.integer "v",               null: false
-    t.text    "t", limit: 65535, null: false
-    t.index ["id"], name: "id", using: :btree
-    t.index ["id"], name: "id_2", unique: true, using: :btree
-  end
-
-  create_table "t_ylt", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.integer "b",               null: false
-    t.integer "c",               null: false
-    t.integer "v",               null: false
-    t.text    "t", limit: 65535, null: false
+    t.text    "t", limit: 65535
     t.index ["id"], name: "id", using: :btree
     t.index ["id"], name: "id_2", unique: true, using: :btree
   end

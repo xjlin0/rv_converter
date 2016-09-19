@@ -29,4 +29,17 @@ namespace :bible_databases do
 
   end
 
+  desc 'Copy KJV into verses for its book and chapter numbers'
+  task populate_verses: :environment do
+  	puts 'preparing empty verses table'
+  	copy_sql = "
+			INSERT INTO verses
+				(id, b, c, v)
+				SELECT
+				 id, b, c, v
+				FROM t_kjv;
+  	"
+
+  	ActiveRecord::Base.connection.execute( copy_sql )
+  end
 end
