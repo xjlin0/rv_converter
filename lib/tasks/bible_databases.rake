@@ -51,9 +51,27 @@ namespace :bible_databases do
   	conn.execute( copy_sql ) unless conn.data_source_exists?(verse[:table_name]) && base.count_by_sql( verse[:verse_count_sql] ) == verse[:verse_count_result]
 
     # SET @r :=0;
-    # update users set email = concat((@r := @r + 1), '@cslt.com');
-    # update users set email = 'jlin@castlighthealth.com' where login = 'jlin';
+    # update users set email = concat((@r := @r + 1), '@github.com');
+    # update users set email = 'user@github.com' where login = 'user';
+  end
 
+  desc 'calculating accumulator chapter number'
+  task calculate_accumulator: :environment do
+    puts 'populating accumulator chapter number'
+    last_verse = Verse.first
+    last_verse.update_attribute(:accumulator_chapter_number, '1')
+
+    Verse.find_each do |current_verse|
+      accumulator_chapter_number = last_verse.chapter_number == current_verse.chapter_number && current_verse.book_number == last_verse.book_number ? last_verse.accumulator_chapter_number : last_verse.accumulator_chapter_number.to_i + 1
+      current_verse.update_attribute(:accumulator_chapter_number, accumulator_chapter_number.to_s)
+      last_verse = current_verse
+      print '.'
+    end
+  end
+
+  desc 'export'
+  task export: :environment do
 
   end
+
 end
