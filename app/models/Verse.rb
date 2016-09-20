@@ -1,9 +1,9 @@
 class Verse < ApplicationRecord
-  self.abstract_class = true
+  self.table_name = 'verses'
   alias_attribute :book_number, :b
   alias_attribute :chapter_number, :c
   alias_attribute :verse_number, :v
-  alias_attribute :text, :t
+  alias_attribute :accumulator_chapter_number, :t
 
 	def self.identify_by_accumulator( opts = {} )
 		chapter_number = opts.fetch(:chapter){ 0 }

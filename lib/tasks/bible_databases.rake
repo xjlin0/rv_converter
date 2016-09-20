@@ -10,7 +10,6 @@ namespace :bible_databases do
 
   	kjv = {
   		table_name: 't_kjv',
-  		verse_number: 30517,
   		verse_count_sql: 'SELECT COUNT(*) FROM t_kjv',
   		verse_count_result: 31103,
   	}
@@ -31,7 +30,7 @@ namespace :bible_databases do
 
   desc 'Copy KJV into verses for its book and chapter numbers'
   task populate_verses: :environment do
-  	puts 'preparing empty verses table'
+
   	copy_sql = "
 			INSERT INTO verses
 				(id, b, c, v)
@@ -40,6 +39,21 @@ namespace :bible_databases do
 				FROM t_kjv;
   	"
 
-  	ActiveRecord::Base.connection.execute( copy_sql )
+    verse = {
+      table_name: 'verses',
+      verse_count_sql: 'SELECT COUNT(*) FROM verses',
+      verse_count_result: 31103,
+    }
+
+    puts 'preparing empty verses table'
+    base = ActiveRecord::Base
+    conn = base.connection
+  	conn.execute( copy_sql ) unless conn.data_source_exists?(verse[:table_name]) && base.count_by_sql( verse[:verse_count_sql] ) == verse[:verse_count_result]
+
+    # SET @r :=0;
+    # update users set email = concat((@r := @r + 1), '@cslt.com');
+    # update users set email = 'jlin@castlighthealth.com' where login = 'jlin';
+
+
   end
 end
