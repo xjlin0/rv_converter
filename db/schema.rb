@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160920033535) do
+ActiveRecord::Schema.define(version: 20160920035406) do
 
   create_table "bible_version_key", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", comment: "This is the general translation information and db links" do |t|
     t.text "table",          limit: 65535, null: false, comment: "Database Table Name "
