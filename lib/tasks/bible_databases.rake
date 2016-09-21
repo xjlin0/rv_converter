@@ -14,6 +14,14 @@ namespace :bible_databases do
   		verse_count_result: 31103,
   	}
 
+    book_name_change = {
+      'Song of Solomon' => 'Song of Songs',
+      '1 Thessalonians' => '1 Thessalo',
+      '2 Thessalonians' => '2 Thessalo',
+      '1 Peter'         => '1Peter',
+      '2 Peter'         => '2Peter',
+    }
+
   	dbconf = Rails.configuration.database_configuration[Rails.env]
   	base = ActiveRecord::Base
   	conn = base.connection
@@ -26,6 +34,10 @@ namespace :bible_databases do
   		exec "mysql -u#{dbconf['username']} #{'-p' + dbconf['password'] if dbconf['password'].present?} #{dbconf['database']} < #{bible[:database_sql]}"
   	end
 
+
+    book_name_change.each do |old_name, new_name|
+      KeyEnglish.where(book_name: old_name).first&.update_attribute(:book_name, new_name)
+    end
   end
 
   desc 'Copy KJV into verses for its book and chapter numbers'

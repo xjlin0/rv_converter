@@ -14,9 +14,14 @@ Verse.uniq.pluck(:accumulator_chapter_number).each do |accumulator_chapter_numbe
   file_name = "rce/#{accumulator_chapter_number}.htm"
   current_chapter = File.open( file_name ) { |f| Nokogiri::HTML(f) }
 
-  c_book_name = current_chapter.css("table td").first.text.split('-').first
-  e_book_name = current_chapter.css("table td").first.text.split('-').last.split('   ').first
-  # e_book_name = current_chapter.css("table td").first.text.split.first.split('-')
+  if file_name == 'rce/1166.htm'
+		c_book_name = '約翰三書'
+		e_book_name = '3 John'
+  else
+	  c_book_name = current_chapter.css("table td").first.text.split('-').first
+	  e_book_name = current_chapter.css("table td").first.text.split('-').last.split('  ').first
+	  # e_book_name = current_chapter.css("table td").first.text.split.first.split('-')
+  end
   chapter_number_from_html = current_chapter.css("table td a")[1].text.split(':').first.to_i
 
   book_number_from_html = KeyEnglish.where(book_name: e_book_name).first_or_initialize.book_number
