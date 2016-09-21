@@ -6,6 +6,7 @@ class CreateRvs < ActiveRecord::Migration[5.0]
         `b` int(11) NOT NULL,
         `c` int(11) NOT NULL,
         `v` int(11) NOT NULL,
+        `cb` text,
         `ct` text,
         `et` text,
         `file_name` text,
