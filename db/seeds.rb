@@ -7,6 +7,9 @@ Rake::Task['bible_databases:populate_verses'].execute
 # calculating accumulator chapter number
 Rake::Task['bible_databases:calculate_accumulator'].execute
 
+# populating data of chinese book names
+Rake::Task['bible_databases:key_chinese'].execute
+
 # importing rv
 puts "\n\nStarting checking\n\n"
 Verse.uniq.pluck(:accumulator_chapter_number).each do |accumulator_chapter_number|

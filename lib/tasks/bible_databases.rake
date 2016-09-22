@@ -3,16 +3,16 @@ namespace :bible_databases do
   desc 'Download KJV bible_databases'
   task fetch_kjv: :environment do
 
-  	bible = {
-  		git_url: 'https://github.com/scrollmapper/bible_databases.git',
-  		database_sql: 'bible_databases/bible-mysql.sql',
-  	}
+    bible = {
+      git_url: 'https://github.com/scrollmapper/bible_databases.git',
+      database_sql: 'bible_databases/bible-mysql.sql',
+    }
 
-  	kjv = {
-  		table_name: 't_kjv',
-  		verse_count_sql: 'SELECT COUNT(*) FROM t_kjv',
-  		verse_count_result: 31103,
-  	}
+    kjv = {
+      table_name: 't_kjv',
+      verse_count_sql: 'SELECT COUNT(*) FROM t_kjv',
+      verse_count_result: 31103,
+    }
 
     book_name_change = {
       'Song of Solomon' => 'Song of Songs',
@@ -22,17 +22,17 @@ namespace :bible_databases do
       '2 Peter'         => '2Peter',
     }
 
-  	dbconf = Rails.configuration.database_configuration[Rails.env]
-  	base = ActiveRecord::Base
-  	conn = base.connection
+    dbconf = Rails.configuration.database_configuration[Rails.env]
+    base = ActiveRecord::Base
+    conn = base.connection
 
-  	puts 'Please ensure internet connections, preparing KJV bible database .....'
+    puts 'Please ensure internet connections, preparing KJV bible database .....'
 
-  	exec "git clone #{bible[:git_url]}" unless File.file?( bible[:database_sql] )
+    exec "git clone #{bible[:git_url]}" unless File.file?( bible[:database_sql] )
 
-  	unless conn.data_source_exists?(kjv[:table_name]) && base.count_by_sql( kjv[:verse_count_sql] ) == kjv[:verse_count_result]
-  		exec "mysql -u#{dbconf['username']} #{'-p' + dbconf['password'] if dbconf['password'].present?} #{dbconf['database']} < #{bible[:database_sql]}"
-  	end
+    unless conn.data_source_exists?(kjv[:table_name]) && base.count_by_sql( kjv[:verse_count_sql] ) == kjv[:verse_count_result]
+      exec "mysql -u#{dbconf['username']} #{'-p' + dbconf['password'] if dbconf['password'].present?} #{dbconf['database']} < #{bible[:database_sql]}"
+    end
 
 
     book_name_change.each do |old_name, new_name|
@@ -43,13 +43,13 @@ namespace :bible_databases do
   desc 'Copy KJV into verses for its book and chapter numbers'
   task populate_verses: :environment do
 
-  	copy_sql = "
-			INSERT INTO verses
-				(id, b, c, v)
-				SELECT
-				 id, b, c, v
-				FROM t_kjv;
-  	"
+    copy_sql = "
+      INSERT INTO verses
+        (id, b, c, v)
+        SELECT
+         id, b, c, v
+        FROM t_kjv;
+    "
 
     verse = {
       table_name: 'verses',
@@ -60,7 +60,7 @@ namespace :bible_databases do
     puts 'preparing empty verses table'
     base = ActiveRecord::Base
     conn = base.connection
-  	conn.execute( copy_sql ) unless conn.data_source_exists?(verse[:table_name]) && base.count_by_sql( verse[:verse_count_sql] ) == verse[:verse_count_result]
+    conn.execute( copy_sql ) unless conn.data_source_exists?(verse[:table_name]) && base.count_by_sql( verse[:verse_count_sql] ) == verse[:verse_count_result]
 
     # SET @r :=0;
     # update users set email = concat((@r := @r + 1), '@github.com');
@@ -69,15 +69,18 @@ namespace :bible_databases do
 
   desc 'calculating accumulator chapter number'
   task calculate_accumulator: :environment do
-    puts 'populating accumulator chapter number'
-    last_verse = Verse.first
-    last_verse.update_attribute(:accumulator_chapter_number, '1')
+    if Verse.where(accumulator_chapter_number: nil).present?
+      Rv.update_all(accumulator_chapter_number: nil)
+      puts 'populating accumulator chapter number'
+      last_verse = Verse.first
+      last_verse.update_attribute(:accumulator_chapter_number, '1')
 
-    Verse.find_each do |current_verse|
-      accumulator_chapter_number = last_verse.chapter_number == current_verse.chapter_number && current_verse.book_number == last_verse.book_number ? last_verse.accumulator_chapter_number : last_verse.accumulator_chapter_number.to_i + 1
-      current_verse.update_attribute(:accumulator_chapter_number, accumulator_chapter_number.to_s)
-      last_verse = current_verse
-      print '.'
+      Verse.find_each do |current_verse|
+        accumulator_chapter_number = last_verse.chapter_number == current_verse.chapter_number && current_verse.book_number == last_verse.book_number ? last_verse.accumulator_chapter_number : last_verse.accumulator_chapter_number.to_i + 1
+        current_verse.update_attribute(:accumulator_chapter_number, accumulator_chapter_number.to_s)
+        last_verse = current_verse
+        print '.'
+      end
     end
   end
 
@@ -159,13 +162,17 @@ namespace :bible_databases do
       '啟示錄' => '啟'
     }
 
-    chinese_books.each_with_index do |(book_name, book_abbreviation), index|
-      next if index.zero?
-      puts index
-      book = KeyChinese.new(book_number: index, book_name: book_name, abbreviation: book_abbreviation)
-      book.testament = book.key_english.testament
-      book.genre     = book.key_english.genre
-      book.save!
+    if KeyChinese.count != 66
+      KeyChinese.destroy_all
+
+      chinese_books.each_with_index do |(book_name, book_abbreviation), index|
+        next if index.zero?
+        puts index
+        book = KeyChinese.new(book_number: index, book_name: book_name, abbreviation: book_abbreviation)
+        book.testament = book.key_english.testament
+        book.genre     = book.key_english.genre
+        book.save!
+      end
     end
   end
 end
