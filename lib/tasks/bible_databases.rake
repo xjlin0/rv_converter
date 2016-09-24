@@ -84,16 +84,33 @@ namespace :bible_databases do
     end
   end
 
-  desc 'export'
+  desc 'exporting yet'
   task export: :environment do
+    require 'CSV'
+    source_klass = Rv
+    export_filename = 'rv.yes'
+    book_names_klass = KeyChinese
 
+    CSV.open('./crv.yet', 'wb', col_sep: "\t") do |tsv|
+      tsv << ['info', 'longName', 'CRV']
+      tsv << ['info', 'shortName', 'CRV']
+
+      book_names_klass.find_each do |book|
+        tsv << [ 'book_name', book.book_name, book.book_name, book.abbreviation ]
+      end
+
+      source_klass.find_each do |scripture|
+        tsv << [ 'verse', scripture.book_number, scripture.chapter_number, scripture.verse_number, scripture.c_text ]
+        print '.'
+      end
+    end
   end
 
   desc 'fill Chinese book names'
   task key_chinese: :environment do
 
     chinese_books = {
-      '書卷全名' => '簡寫',
+      'Book full name' => 'Book abbreviation',
       '創世記' => '創' ,
       '出埃及記' => '出' ,
       '利未記' => '利' ,

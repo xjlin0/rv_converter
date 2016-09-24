@@ -51,10 +51,3 @@ Verse.uniq.pluck(:accumulator_chapter_number).each do |accumulator_chapter_numbe
 	end
 
 end
-
-
-  # alias_attribute :book_number, :b
-  # alias_attribute :chapter_number, :c
-  # alias_attribute :verse_number, :v
-  # alias_attribute :text, :t
-  # alias_attribute :accumulator_chapter_number, :t
