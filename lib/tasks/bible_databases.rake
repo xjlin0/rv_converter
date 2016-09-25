@@ -84,8 +84,18 @@ namespace :bible_databases do
     end
   end
 
-  desc 'exporting yet'
-  task export: :environment do
+  desc 'exporting CUV'
+  task export_cuv: :environment do
+    require 'CSV'
+    source_klass = Rv
+    export_filename = 'rv.yes'
+    book_names_klass = KeyChinese
+    #verse  1 1 6 　神說：「諸水之間要有空氣，將水分為上下。」@<x1@>@/
+    #xref  1 1 6 1 @<to:Exod.1.2,Lev.1.1@>Exod. 1:2, Lev. 1:1@/
+  end
+
+  desc 'exporting CRV'
+  task export_crv: :environment do
     require 'CSV'
     source_klass = Rv
     export_filename = 'rv.yes'
@@ -96,7 +106,7 @@ namespace :bible_databases do
       tsv << ['info', 'shortName', 'CRV']
 
       book_names_klass.find_each do |book|
-        tsv << [ 'book_name', book.book_name, book.book_name, book.abbreviation ]
+        tsv << [ 'book_name', book.book_number, book.book_name, book.abbreviation ]
       end
 
       source_klass.find_each do |scripture|

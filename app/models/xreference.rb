@@ -1,0 +1,2 @@
+class Xreference < ApplicationRecord
+end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160922030431) do
+ActiveRecord::Schema.define(version: 20160925020009) do
 
   create_table "bible_version_key", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", comment: "This is the general translation information and db links" do |t|
     t.text "table",          limit: 65535, null: false, comment: "Database Table Name "
@@ -83,6 +83,15 @@ ActiveRecord::Schema.define(version: 20160922030431) do
     t.index ["id"], name: "id_2", using: :btree
   end
 
+  create_table "t_cuv", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "b",               null: false
+    t.integer "c",               null: false
+    t.integer "v",               null: false
+    t.text    "t", limit: 65535
+    t.index ["id"], name: "id", using: :btree
+    t.index ["id"], name: "id_2", unique: true, using: :btree
+  end
+
   create_table "t_dby", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer "b",               null: false
     t.integer "c",               null: false
@@ -134,6 +143,12 @@ ActiveRecord::Schema.define(version: 20160922030431) do
     t.text    "t", limit: 65535
     t.index ["id"], name: "id", using: :btree
     t.index ["id"], name: "id_2", unique: true, using: :btree
+  end
+
+  create_table "x_references", primary_key: "root_id", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "target_begin_id", null: false
+    t.integer "target_end_id",   null: false
+    t.index ["root_id"], name: "id", using: :btree
   end
 
 end
