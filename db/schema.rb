@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160925020009) do
+ActiveRecord::Schema.define(version: 20160926154913) do
 
   create_table "bible_version_key", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", comment: "This is the general translation information and db links" do |t|
     t.text "table",          limit: 65535, null: false, comment: "Database Table Name "
@@ -22,6 +22,14 @@ ActiveRecord::Schema.define(version: 20160925020009) do
     t.text "publisher",      limit: 65535, null: false, comment: "Publisher"
     t.text "copyright",      limit: 65535, null: false, comment: "Copyright "
     t.text "copyright_info", limit: 65535, null: false, comment: "Extended Copyright info"
+  end
+
+  create_table "cuv_pericopes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "b",                null: false
+    t.integer "c",                null: false
+    t.integer "v",                null: false
+    t.text    "t",  limit: 65535, null: false
+    t.text    "pa", limit: 65535
   end
 
   create_table "key_abbreviations_english", unsigned: true, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", comment: "A table mapping book abbreviations to the book they refer to" do |t|

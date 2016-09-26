@@ -10,6 +10,6 @@ class KeyEnglish < ApplicationRecord
   has_many :key_abbreviations_englishes, class_name: 'KeyAbbreviationsEnglish', foreign_key: :b
 
   def abbreviation
-  	self.key_abbreviations_englishes.where.not(abbreviation: self.book_name, primary: false).first
+  	self.key_abbreviations_englishes.where.not(abbreviation: self.book_name, primary: false).first&.abbreviation
   end
 end
