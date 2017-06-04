@@ -1,19 +1,32 @@
 # import KJV data
-Rake::Task['bible_databases:fetch_kjv'].execute
+#Rake::Task['bible_databases:fetch_kjv'].execute
 
 # copy all data from KJV as the baseline structure
-Rake::Task['bible_databases:populate_verses'].execute
+#Rake::Task['bible_databases:populate_verses'].execute
 
 # calculating accumulator chapter number
-Rake::Task['bible_databases:calculate_accumulator'].execute
+#Rake::Task['bible_databases:calculate_accumulator'].execute
 
 # populating data of chinese book names
-Rake::Task['bible_databases:key_chinese'].execute
+#Rake::Task['bible_databases:key_chinese'].execute
 
 # importing cuv #rce/nuv_big5.yet contains bad data
 if TCuv.count.zero?
+  puts 'starting parsing TCUV'
+  bible = File.open("bible_databases/bible_processed.xml") { |f| Nokogiri::XML(f) }
 
-
+   bible.css('bible > book').each do |book|
+     book_number = book['id']
+     book.css('chapter').each do |chapter|
+       chapter_number = chapter['number']
+       chapter.css('verse').each_with_index do |verse, verse_index|
+         print '.'
+         verse_number = verse['number'] || (verse_index+1).to_s
+         id_string = book_number.rjust(2, '0') + chapter_number.rjust(3, '0') + verse_number.rjust(3, '0')
+         TCuv.create(id: id_string.to_i, book_number: book_number.to_i, chapter_number: chapter_number.to_i, verse_number: verse_number.to_i, text: verse.text)
+       end
+     end
+   end
 end
 
 # importing rv
