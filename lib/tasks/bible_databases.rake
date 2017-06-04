@@ -202,4 +202,30 @@ namespace :bible_databases do
       end
     end
   end
+
+  desc 'rce/nuv_big5.yet contains bad data, cannot be used'
+  task convert_nuv_big5_yet: :environment do
+    require 'csv'
+    file_name = 'rce/nuv_big5.yet'
+    puts 'starting parsing TCUV'
+    CSV.foreach(file_name, col_sep: "\t") do |row|
+          print '.'
+      next if ['info', 'book_name', 'xref', 'footnote'].include?( row.first )
+
+        book_number = row.second
+        chapter_number = row.third
+        verse_number = row[3]
+
+        id_string = book_number.rjust(2, '0') + chapter_number.rjust(3, '0') + verse_number.rjust(3, '0')
+
+      #refactor using case...when
+      if row.first == 'verse'
+          verse = TCuv.create(id: id_string.to_i, book_number: book_number, chapter_number: chapter_number, verse_number: verse_number, text: row[4])
+      end
+
+      if row.first == 'pericope'
+
+      end
+    end
+  end
 end
