@@ -7,5 +7,5 @@ class Verse < ApplicationRecord
   alias_attribute :accumulator_chapter_number, :t
   belongs_to :key_chinese, class_name: 'KeyChinese', foreign_key: :b
   belongs_to :key_english, class_name: 'KeyEnglish', foreign_key: :b
-
+  has_many :x_references, class_name: 'Xreference', foreign_key: :root_id
 end

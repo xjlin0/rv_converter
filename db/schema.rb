@@ -24,6 +24,14 @@ ActiveRecord::Schema.define(version: 20160926154913) do
     t.text "copyright_info", limit: 65535, null: false, comment: "Extended Copyright info"
   end
 
+  create_table "cross_reference", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.integer "vid", null: false, comment: "verse ID"
+    t.integer "r",   null: false, comment: "Rank"
+    t.integer "sv",  null: false, comment: "Start Verse"
+    t.integer "ev",  null: false, comment: "End Verse"
+    t.index ["vid"], name: "vid", using: :btree
+  end
+
   create_table "cuv_pericopes", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "b",                null: false
     t.integer "c",                null: false
@@ -32,7 +40,7 @@ ActiveRecord::Schema.define(version: 20160926154913) do
     t.text    "pa", limit: 65535
   end
 
-  create_table "key_abbreviations_english", unsigned: true, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", comment: "A table mapping book abbreviations to the book they refer to" do |t|
+  create_table "key_abbreviations_english", unsigned: true, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", comment: "A table mapping book abbreviations to the book they refer to" do |t|
     t.string  "a",                           null: false
     t.integer "b", limit: 2,                 null: false, comment: "ID of book that is abbreviated",                          unsigned: true
     t.boolean "p",           default: false, null: false, comment: "Whether an abbreviation is the primary one for the book"
@@ -153,10 +161,12 @@ ActiveRecord::Schema.define(version: 20160926154913) do
     t.index ["id"], name: "id_2", unique: true, using: :btree
   end
 
-  create_table "x_references", primary_key: "root_id", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "target_begin_id", null: false
-    t.integer "target_end_id",   null: false
-    t.index ["root_id"], name: "id", using: :btree
+  create_table "x_references", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.integer "vid", null: false, comment: "verse ID"
+    t.integer "r",   null: false, comment: "Rank"
+    t.integer "sv",  null: false, comment: "Start Verse"
+    t.integer "ev",  null: false, comment: "End Verse"
+    t.index ["vid"], name: "vid", using: :btree
   end
 
 end
